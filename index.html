@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>গাজী ফ্যামিলি</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f0f7f2;margin:0;color:#17452d}
+header{background:#087a43;color:white;text-align:center;padding:25px}
+main{max-width:800px;margin:15px auto;padding:12px}
+section{background:white;padding:15px;margin:12px 0;border-radius:12px}
+input,textarea{width:100%;padding:11px;margin:6px 0;box-sizing:border-box;border:1px solid #ccc;border-radius:7px}
+button{background:#087a43;color:white;padding:10px;border:0;border-radius:7px;margin:4px;cursor:pointer}
+.del{background:#b42318}.edit{background:#2765a8}
+.item{border-bottom:1px solid #ddd;padding:12px 0;overflow-wrap:anywhere}
+img{max-width:100%;height:auto}
+</style>
+</head>
+<body>
+<header>
+<h1>🌿 গাজী ফ্যামিলি</h1>
+<p>আমাদের পরিবার, আমাদের বন্ধন</p>
+</header>
+<main>
+<section>
+<h2>👨‍👩‍👧‍👦 সদস্য তালিকা</h2>
+<input id="n" placeholder="সদস্যের নাম">
+<input id="p" placeholder="মোবাইল নম্বর">
+<input id="b" placeholder="ব্লাড গ্রুপ (যেমন O+)">
+<button onclick="addMember()">সদস্য যোগ করুন</button>
+<div id="members"></div>
+</section>
+
+<section>
+<h2>🎉 অনুষ্ঠান ও ছবি</h2>
+<input id="et" placeholder="অনুষ্ঠানের নাম">
+<input id="ed" type="date">
+<input id="pic" type="file" accept="image/*">
+<textarea id="eb" placeholder="অনুষ্ঠানের বিবরণ লিখুন"></textarea>
+<button onclick="addEvent()">অনুষ্ঠান যোগ করুন</button>
+<div id="events"></div>
+</section>
+
+<section>
+<h2>📝 বিবরণ ও ঘোষণা</h2>
+<input id="nt" placeholder="শিরোনাম: যেমন আগামী অনুষ্ঠান">
+<textarea id="nb" placeholder="চাঁদার হিসাব, কে কত দিলেন, পরবর্তী প্রোগ্রাম ইত্যাদি লিখুন"></textarea>
+<button onclick="addNote()">লেখা যোগ করুন</button>
+<div id="notes"></div>
+</section>
+</main>
+
+<script>
+const load=k=>JSON.parse(localStorage.getItem('gf_'+k)||'[]');
+const save=(k,v)=>localStorage.setItem('gf_'+k,JSON.stringify(v));
+const safe=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function renderMembers(){
+members.innerHTML=load('members').map((x,i)=>`<div class="item">${i+1}. ${safe(x.n)}<br>মোবাইল: ${safe(x.p)}<br>ব্লাড গ্রুপ: ${safe(x.b)}<br><button class="edit" onclick="changeMember(${i})">এডিট</button><button class="del" onclick="removeItem('members',${i})">মুছুন</button></div>`).join('');
+}
+function addMember(){
+let n=document.getElementById('n').value.trim(),p=document.getElementById('p').value.trim(),b=document.getElementById('b').value.trim();
+if(!n||!p){alert('নাম ও মোবাইল নম্বর লিখুন');return}
+let a=load('members'),i=editM;
+if(i<0)a.push({n,p,b});else{a[i]={n,p,b};editM=-1}
+save('members',a);document.getElementById('n').value='';document.getElementById('p').value='';document.getElementById('b').value='';renderMembers();
+}
+let editM=-1;
+function changeMember(i){let x=load('members')[i];n.value=x.n;p.value=x.p;b.value=x.b;editM=i;window.scrollTo(0,0)}
+function addEvent(){
+let title=et.value.trim(),text=eb.value.trim(),date=ed.value,file=pic.files[0];
+if(!title){alert('অনুষ্ঠানের নাম লিখুন');return}
+let a=load('events');
+const finish=photo=>{a.push({title,text,date,photo});try{save('events',a);renderEvents();et.value='';eb.value='';ed.value='';pic.value=''}catch(e){alert('ছবিটি ছোট করে আবার চেষ্টা করুন')}};
+if(file){if(file.size>500000){alert('ছবিটি 500 KB-এর চেয়ে ছোট করুন');return}
+let r=new FileReader();r.onload=()=>finish(r.result);r.readAsDataURL(file)
+}else finish('');
+}
+function renderEvents(){
+events.innerHTML=load('events').map((x,i)=>`<div class="item"><h3>${safe(x.title)}</h3>${safe(x.date)}<p>${safe(x.text)}</p>${x.photo?`<img src="${x.photo}">`:''}<br><button class="edit" onclick="editEvent(${i})">এডিট</button><button class="del" onclick="removeItem('events',${i})">মুছুন</button></div>`).join('');
+}
+function editEvent(i){let a=load('events'),x=a[i];et.value=x.title;ed.value=x.date;eb.value=x.text;a.splice(i,1);save('events',a);renderEvents()}
+function addNote(){
+let title=nt.value.trim(),text=nb.value.trim();if(!title||!text){alert('শিরোনাম ও বিবরণ লিখুন');return}
+let a=load('notes');a.push({title,text});save('notes',a);nt.value='';nb.value='';renderNotes();
+}
+function renderNotes(){
+notes.innerHTML=load('notes').map((x,i)=>`<div class="item"><h3>${safe(x.title)}</h3><p>${safe(x.text).replace(/\n/g,'<br>')}</p><button class="edit" onclick="editNote(${i})">এডিট</button><button class="del" onclick="removeItem('notes',${i})">মুছুন</button></div>`).join('');
+}
+function editNote(i){let a=load('notes'),x=a[i];nt.value=x.title;nb.value=x.text;a.splice(i,1);save('notes',a);renderNotes()}
+function removeItem(k,i){if(confirm('তথ্যটি মুছবেন?')){let a=load(k);a.splice(i,1);save(k,a);renderMembers();renderEvents();renderNotes()}}
+renderMembers();renderEvents();renderNotes();
+</script>
+</body>
+</html>
