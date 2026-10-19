@@ -1,31 +1,94 @@
-<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>গাজী ফ্যামিলি</title>
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>গাজী ফ্যামিলি</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f3f7f4;color:#183528;font-family:Arial,"Noto Sans Bengali",sans-serif}header{background:#087a3d;color:white;padding:22px 14px;text-align:center}header h1{margin:0 0 6px;font-size:27px}header p{margin:0}main{max-width:850px;margin:14px auto;padding:0 12px}.section{background:white;border-radius:12px;padding:15px;margin:13px 0;box-shadow:0 2px 9px #0000000d}h2{font-size:20px;margin:0 0 12px;color:#087a3d}.hint,.small{font-size:13px;color:#64756c}input,textarea{width:100%;padding:11px;margin:5px 0;border:1px solid #ccd8d0;border-radius:8px;font:inherit;background:white}textarea{min-height:78px;resize:vertical}.btn{border:0;border-radius:8px;padding:9px 12px;margin:4px 4px 4px 0;background:#087a3d;color:white;font-weight:bold;font-size:14px}.btn.gray{background:#64756c}.btn.red{background:#b42318}.item{border:1px solid #e1e9e3;border-radius:9px;padding:11px;margin:9px 0;overflow-wrap:anywhere}.item h3{margin:0 0 7px;font-size:17px}.item p{margin:5px 0;white-space:pre-wrap}.row{display:grid;grid-template-columns:1fr 1fr;gap:6px}.status{font-size:13px;margin-top:8px;color:#fff}@media(max-width:500px){.row{grid-template-columns:1fr}header h1{font-size:23px}}
-</style></head><body>
-<header><h1>👨‍👩‍👧‍👦 গাজী ফ্যামিলি</h1><p>পরিবারের তথ্য, পরিকল্পনা ও স্মৃতি</p><div id="status" class="status">ডেটাবেস সংযোগের অপেক্ষায়…</div></header>
-<main>
-<section class="section"><h2>📌 আগামী অনুষ্ঠান ও বর্তমান পরিকল্পনা</h2><p class="hint">আগামী অনুষ্ঠান, কী পরিকল্পনা চলছে, তারিখ ও সিদ্ধান্ত এখানে লিখুন।</p><div id="plansForm"></div><div id="plansList"></div></section>
-<section class="section"><h2>👥 সদস্য তালিকা</h2><div id="membersForm"></div><div id="membersList"></div></section>
-<section class="section"><h2>📷 অনুষ্ঠান, ছবি ও ডকুমেন্ট</h2><p class="hint">ছবির লিংক বা ডকুমেন্টের লিংক যোগ করতে পারবেন।</p><div id="eventsForm"></div><div id="eventsList"></div></section>
-<section class="section"><h2>📝 অন্যান্য তথ্য ও ঘোষণা</h2><div id="notesForm"></div><div id="notesList"></div></section>
-<p class="small">সবাই একই ডেটাবেস ব্যবহার করলে নতুন তথ্য সবার ফোনে দেখা যাবে।</p></main>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f7f2;color:#183528;font-family:Arial,sans-serif}
+header{background:#087a3d;color:white;text-align:center;padding:22px 10px}
+header h1{margin:0 0 8px}
+main{max-width:800px;margin:auto;padding:12px}
+section{background:white;padding:15px;margin:12px 0;border-radius:12px;box-shadow:0 2px 8px #0001}
+h2{color:#087a3d;font-size:20px}
+input,textarea{width:100%;padding:11px;margin:5px 0;border:1px solid #ccd8d0;border-radius:7px;font:inherit}
+textarea{min-height:70px}
+button{border:0;border-radius:7px;padding:10px;margin:4px 3px 4px 0;background:#087a3d;color:white;font-weight:bold}
+.del{background:#b42318}.edit{background:#64756c}
+.item{border:1px solid #ddd;padding:10px;margin:9px 0;border-radius:8px;overflow-wrap:anywhere}
+.item p{white-space:pre-wrap}
+small{color:#65756b}
+</style>
+</head>
+<body>
+<header>
+<h1>👨‍👩‍👧‍👦 গাজী ফ্যামিলি</h1>
+<p>পরিবারের তথ্য, পরিকল্পনা ও স্মৃতি</p>
+<div id="status">সংযোগ হচ্ছে...</div>
+</header>
+<main id="app"></main>
 <script>
-/* Firebase Console থেকে পাওয়া নিজের config নিচে বসান */
-const firebaseConfig={apiKey:"PASTE_API_KEY_HERE",authDomain:"PASTE_PROJECT_ID_HERE.firebaseapp.com",databaseURL:"PASTE_DATABASE_URL_HERE",projectId:"PASTE_PROJECT_ID_HERE",storageBucket:"PASTE_PROJECT_ID_HERE.appspot.com",messagingSenderId:"PASTE_MESSAGING_SENDER_ID_HERE",appId:"PASTE_APP_ID_HERE"};
-const sections={
-plans:{form:"plansForm",list:"plansList",fields:[["title","শিরোনাম"],["date","তারিখ (ঐচ্ছিক)"],["text","বিস্তারিত পরিকল্পনা"]]},
-members:{form:"membersForm",list:"membersList",fields:[["name","নাম"],["phone","মোবাইল নম্বর"],["blood","রক্তের গ্রুপ"]]},
-events:{form:"eventsForm",list:"eventsList",fields:[["title","শিরোনাম"],["date","তারিখ (ঐচ্ছিক)"],["text","বিস্তারিত"],["url","ছবি/ডকুমেন্ট লিংক (ঐচ্ছিক)"]]},
-notes:{form:"notesForm",list:"notesList",fields:[["title","শিরোনাম"],["text","বিস্তারিত"]]}};
-let db=null,editing={};
-function safe(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function setStatus(t){document.getElementById("status").textContent=t;}
-function renderForm(k){const s=sections[k],e=editing[k]||null;document.getElementById(s.form).innerHTML='<div class="row">'+s.fields.map(f=>f[0]==="text"?'<textarea id="'+k+'_'+f[0]+'" placeholder="'+safe(f[1])+'">'+safe(e?e.data[f[0]]:"")+'</textarea>':'<input id="'+k+'_'+f[0]+'" placeholder="'+safe(f[1])+'" value="'+safe(e?e.data[f[0]]:"")+'">').join("")+'</div><button class="btn" onclick="saveItem(\''+k+'\')">'+(e?"পরিবর্তন সংরক্ষণ":"＋ Add করুন")+'</button>'+(e?'<button class="btn gray" onclick="cancelEdit(\''+k+'\')">বাতিল</button>':"");}
-function cancelEdit(k){delete editing[k];renderForm(k);}
-function saveItem(k){if(!db){alert("আগে Firebase সেটআপ করতে হবে।");return;}const s=sections[k],d={};s.fields.forEach(f=>d[f[0]]=document.getElementById(k+"_"+f[0]).value.trim());if(!d[s.fields[0][0]]){alert(s.fields[0][1]+" লিখুন");return;}d.updatedAt=Date.now();const old=editing[k];(old?db.ref(k+"/"+old.id).update(d):db.ref(k).push(d)).then(()=>{delete editing[k];renderForm(k);}).catch(e=>alert("সংরক্ষণ হয়নি: "+e.message));}
-function renderList(k,snap){const s=sections[k],el=document.getElementById(s.list),a=[];snap.forEach(c=>a.push({id:c.key,data:c.val()||{}}));a.reverse();el.innerHTML=a.length?a.map(x=>{const d=x.data,title=d.name||d.title||"তথ্য",body=s.fields.slice(1).map(f=>{const v=d[f[0]];if(!v)return "";if(f[0]==="url")return '<p><b>'+safe(f[1])+':</b> <a href="'+safe(v)+'" target="_blank" rel="noopener">লিংক খুলুন</a></p>';return '<p><b>'+safe(f[1])+':</b> '+safe(v)+'</p>';}).join("");return '<div class="item"><h3>'+safe(title)+'</h3>'+body+'<button class="btn gray" onclick="startEdit(\''+k+'\',\''+x.id+'\')">✏️ Edit</button><button class="btn red" onclick="deleteItem(\''+k+'\',\''+x.id+'\')">🗑 Delete</button></div>';}).join(""):'<p class="small">এখনো কোনো তথ্য যোগ করা হয়নি।</p>';}
-function startEdit(k,id){db.ref(k+"/"+id).once("value").then(s=>{editing[k]={id,data:s.val()||{}};renderForm(k);document.getElementById(sections[k].form).scrollIntoView({behavior:"smooth",block:"center"});});}
-function deleteItem(k,id){if(confirm("এই তথ্যটি মুছে ফেলতে চান?"))db.ref(k+"/"+id).remove().catch(e=>alert("মুছতে সমস্যা: "+e.message));}
-function init(){if(!firebaseConfig.apiKey.startsWith("PASTE_")&&!firebaseConfig.databaseURL.startsWith("PASTE_")){try{firebase.initializeApp(firebaseConfig);db=firebase.database();setStatus("অনলাইন ডেটাবেস সংযুক্ত");}catch(e){setStatus("Firebase সেটআপে সমস্যা — config পরীক্ষা করুন");}}else setStatus("সেটআপ বাকি: Firebase config বসাতে হবে");Object.keys(sections).forEach(k=>{renderForm(k);if(db)db.ref(k).on("value",s=>renderList(k,s),e=>setStatus("ডেটা পড়তে সমস্যা: "+e.message));else document.getElementById(sections[k].list).innerHTML='<p class="small">Firebase সেটআপ শেষ হলে এখানে সবার তথ্য দেখা যাবে।</p>';});}init();
-</script></body></html>
+const DB="https://gazi-family-default-rtdb.asia-southeast1.firebasedatabase.app";
+const groups=[
+{key:"members",title:"👥 সদস্য তালিকা",fields:[["name","সদস্যের নাম"],["phone","মোবাইল নম্বর"],["blood","রক্তের গ্রুপ"]]},
+{key:"plans",title:"📌 পরিকল্পনা ও অনুষ্ঠান",fields:[["title","শিরোনাম"],["date","তারিখ"],["text","বিস্তারিত"]]},
+{key:"events",title:"📷 ছবি ও ডকুমেন্ট",fields:[["title","শিরোনাম"],["date","তারিখ"],["text","বিস্তারিত"],["url","ছবি বা ডকুমেন্টের লিংক"]]},
+{key:"notes",title:"📝 অন্যান্য তথ্য ও ঘোষণা",fields:[["title","শিরোনাম"],["text","বিস্তারিত"]]}
+];
+let records={},editing=null;
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+async function api(path,method="GET",data){
+ const r=await fetch(DB+"/"+path+".json",{method,headers:{"Content-Type":"application/json"},body:data===undefined?undefined:JSON.stringify(data)});
+ if(!r.ok)throw Error("ডেটাবেসে সমস্যা: "+r.status);
+ return r.json();
+}
+function draw(){
+ const app=document.getElementById("app");
+ app.innerHTML=groups.map(g=>{
+ const old=editing&&editing.group===g.key?records[g.key]?.[editing.id]:null;
+ const form=g.fields.map(([k,label])=>
+ k==="text"?`<textarea id="${g.key}_${k}" placeholder="${esc(label)}">${esc(old?.[k]||"")}</textarea>`:
+ `<input id="${g.key}_${k}" placeholder="${esc(label)}" value="${esc(old?.[k]||"")}">`
+ ).join("");
+ const list=Object.entries(records[g.key]||{}).reverse().map(([id,d])=>
+ `<div class="item"><b>${esc(d.name||d.title||"তথ্য")}</b>${
+ g.fields.filter(f=>f[0]!=="name"&&d[f[0]]).map(([k,l])=>
+ k==="url"?`<p>${esc(l)}: <a href="${esc(d[k])}" target="_blank" rel="noopener">লিংক খুলুন</a></p>`:
+ `<p><b>${esc(l)}:</b> ${esc(d[k])}</p>`).join("")
+ }<button class="edit" onclick="editItem('${g.key}','${id}')">✏️ Edit</button><button class="del" onclick="delItem('${g.key}','${id}')">🗑 Delete</button></div>`
+ ).join("");
+ return `<section><h2>${g.title}</h2><div><small>নতুন তথ্য যোগ করুন অথবা পুরোনো তথ্য এডিট করুন।</small></div>${form}<button onclick="saveItem('${g.key}')">${old?"পরিবর্তন সংরক্ষণ":"＋ Add করুন"}</button>${old?'<button class="edit" onclick="cancelEdit()">বাতিল</button>':""}<hr>${list||"<small>এখনো কোনো তথ্য যোগ করা হয়নি।</small>"}</section>`;
+ }).join("");
+}
+async function refresh(){
+ try{
+ const data=await Promise.all(groups.map(g=>api(g.key)));
+ groups.forEach((g,i)=>records[g.key]=data[i]||{});
+ document.getElementById("status").textContent="✅ ডেটাবেস সংযুক্ত";
+ draw();
+ }catch(e){document.getElementById("status").textContent="সংযোগ হয়নি: "+e.message}
+}
+async function saveItem(k){
+ try{
+ const g=groups.find(x=>x.key===k),d={};
+ g.fields.forEach(([f])=>d[f]=document.getElementById(k+"_"+f).value.trim());
+ if(!d[g.fields[0][0]])return alert("প্রথম ঘরটি পূরণ করুন।");
+ if(editing&&editing.group===k)await api(k+"/"+editing.id,"PATCH",d);
+ else await api(k,"POST",d);
+ editing=null;await refresh();alert("তথ্য সংরক্ষণ হয়েছে।");
+ }catch(e){alert("সংরক্ষণ হয়নি। Firebase Rules ও ইন্টারনেট পরীক্ষা করুন। "+e.message)}
+}
+function editItem(k,id){editing={group:k,id};draw();document.getElementById(k+"_name")?.focus();}
+function cancelEdit(){editing=null;draw();}
+async function delItem(k,id){
+ if(!confirm("এই তথ্য মুছে ফেলবেন?"))return;
+ try{await api(k+"/"+id,"DELETE");editing=null;await refresh();}
+ catch(e){alert("মুছতে সমস্যা হয়েছে: "+e.message)}
+}
+refresh();
+setInterval(refresh,10000);
+</script>
+</body>
+</html>
