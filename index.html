@@ -1,94 +1,31 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>গাজী ফ্যামিলি</title>
+<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>গাজী ফ্যামিলি</title>
 <style>
-body{font-family:Arial,sans-serif;background:#f0f7f2;margin:0;color:#17452d}
-header{background:#087a43;color:white;text-align:center;padding:25px}
-main{max-width:800px;margin:15px auto;padding:12px}
-section{background:white;padding:15px;margin:12px 0;border-radius:12px}
-input,textarea{width:100%;padding:11px;margin:6px 0;box-sizing:border-box;border:1px solid #ccc;border-radius:7px}
-button{background:#087a43;color:white;padding:10px;border:0;border-radius:7px;margin:4px;cursor:pointer}
-.del{background:#b42318}.edit{background:#2765a8}
-.item{border-bottom:1px solid #ddd;padding:12px 0;overflow-wrap:anywhere}
-img{max-width:100%;height:auto}
-</style>
-</head>
-<body>
-<header>
-<h1>🌿 গাজী ফ্যামিলি</h1>
-<p>আমাদের পরিবার, আমাদের বন্ধন</p>
-</header>
+*{box-sizing:border-box}body{margin:0;background:#f3f7f4;color:#183528;font-family:Arial,"Noto Sans Bengali",sans-serif}header{background:#087a3d;color:white;padding:22px 14px;text-align:center}header h1{margin:0 0 6px;font-size:27px}header p{margin:0}main{max-width:850px;margin:14px auto;padding:0 12px}.section{background:white;border-radius:12px;padding:15px;margin:13px 0;box-shadow:0 2px 9px #0000000d}h2{font-size:20px;margin:0 0 12px;color:#087a3d}.hint,.small{font-size:13px;color:#64756c}input,textarea{width:100%;padding:11px;margin:5px 0;border:1px solid #ccd8d0;border-radius:8px;font:inherit;background:white}textarea{min-height:78px;resize:vertical}.btn{border:0;border-radius:8px;padding:9px 12px;margin:4px 4px 4px 0;background:#087a3d;color:white;font-weight:bold;font-size:14px}.btn.gray{background:#64756c}.btn.red{background:#b42318}.item{border:1px solid #e1e9e3;border-radius:9px;padding:11px;margin:9px 0;overflow-wrap:anywhere}.item h3{margin:0 0 7px;font-size:17px}.item p{margin:5px 0;white-space:pre-wrap}.row{display:grid;grid-template-columns:1fr 1fr;gap:6px}.status{font-size:13px;margin-top:8px;color:#fff}@media(max-width:500px){.row{grid-template-columns:1fr}header h1{font-size:23px}}
+</style></head><body>
+<header><h1>👨‍👩‍👧‍👦 গাজী ফ্যামিলি</h1><p>পরিবারের তথ্য, পরিকল্পনা ও স্মৃতি</p><div id="status" class="status">ডেটাবেস সংযোগের অপেক্ষায়…</div></header>
 <main>
-<section>
-<h2>👨‍👩‍👧‍👦 সদস্য তালিকা</h2>
-<input id="n" placeholder="সদস্যের নাম">
-<input id="p" placeholder="মোবাইল নম্বর">
-<input id="b" placeholder="ব্লাড গ্রুপ (যেমন O+)">
-<button onclick="addMember()">সদস্য যোগ করুন</button>
-<div id="members"></div>
-</section>
-
-<section>
-<h2>🎉 অনুষ্ঠান ও ছবি</h2>
-<input id="et" placeholder="অনুষ্ঠানের নাম">
-<input id="ed" type="date">
-<input id="pic" type="file" accept="image/*">
-<textarea id="eb" placeholder="অনুষ্ঠানের বিবরণ লিখুন"></textarea>
-<button onclick="addEvent()">অনুষ্ঠান যোগ করুন</button>
-<div id="events"></div>
-</section>
-
-<section>
-<h2>📝 বিবরণ ও ঘোষণা</h2>
-<input id="nt" placeholder="শিরোনাম: যেমন আগামী অনুষ্ঠান">
-<textarea id="nb" placeholder="চাঁদার হিসাব, কে কত দিলেন, পরবর্তী প্রোগ্রাম ইত্যাদি লিখুন"></textarea>
-<button onclick="addNote()">লেখা যোগ করুন</button>
-<div id="notes"></div>
-</section>
-</main>
-
+<section class="section"><h2>📌 আগামী অনুষ্ঠান ও বর্তমান পরিকল্পনা</h2><p class="hint">আগামী অনুষ্ঠান, কী পরিকল্পনা চলছে, তারিখ ও সিদ্ধান্ত এখানে লিখুন।</p><div id="plansForm"></div><div id="plansList"></div></section>
+<section class="section"><h2>👥 সদস্য তালিকা</h2><div id="membersForm"></div><div id="membersList"></div></section>
+<section class="section"><h2>📷 অনুষ্ঠান, ছবি ও ডকুমেন্ট</h2><p class="hint">ছবির লিংক বা ডকুমেন্টের লিংক যোগ করতে পারবেন।</p><div id="eventsForm"></div><div id="eventsList"></div></section>
+<section class="section"><h2>📝 অন্যান্য তথ্য ও ঘোষণা</h2><div id="notesForm"></div><div id="notesList"></div></section>
+<p class="small">সবাই একই ডেটাবেস ব্যবহার করলে নতুন তথ্য সবার ফোনে দেখা যাবে।</p></main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
-const load=k=>JSON.parse(localStorage.getItem('gf_'+k)||'[]');
-const save=(k,v)=>localStorage.setItem('gf_'+k,JSON.stringify(v));
-const safe=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function renderMembers(){
-members.innerHTML=load('members').map((x,i)=>`<div class="item">${i+1}. ${safe(x.n)}<br>মোবাইল: ${safe(x.p)}<br>ব্লাড গ্রুপ: ${safe(x.b)}<br><button class="edit" onclick="changeMember(${i})">এডিট</button><button class="del" onclick="removeItem('members',${i})">মুছুন</button></div>`).join('');
-}
-function addMember(){
-let n=document.getElementById('n').value.trim(),p=document.getElementById('p').value.trim(),b=document.getElementById('b').value.trim();
-if(!n||!p){alert('নাম ও মোবাইল নম্বর লিখুন');return}
-let a=load('members'),i=editM;
-if(i<0)a.push({n,p,b});else{a[i]={n,p,b};editM=-1}
-save('members',a);document.getElementById('n').value='';document.getElementById('p').value='';document.getElementById('b').value='';renderMembers();
-}
-let editM=-1;
-function changeMember(i){let x=load('members')[i];n.value=x.n;p.value=x.p;b.value=x.b;editM=i;window.scrollTo(0,0)}
-function addEvent(){
-let title=et.value.trim(),text=eb.value.trim(),date=ed.value,file=pic.files[0];
-if(!title){alert('অনুষ্ঠানের নাম লিখুন');return}
-let a=load('events');
-const finish=photo=>{a.push({title,text,date,photo});try{save('events',a);renderEvents();et.value='';eb.value='';ed.value='';pic.value=''}catch(e){alert('ছবিটি ছোট করে আবার চেষ্টা করুন')}};
-if(file){if(file.size>500000){alert('ছবিটি 500 KB-এর চেয়ে ছোট করুন');return}
-let r=new FileReader();r.onload=()=>finish(r.result);r.readAsDataURL(file)
-}else finish('');
-}
-function renderEvents(){
-events.innerHTML=load('events').map((x,i)=>`<div class="item"><h3>${safe(x.title)}</h3>${safe(x.date)}<p>${safe(x.text)}</p>${x.photo?`<img src="${x.photo}">`:''}<br><button class="edit" onclick="editEvent(${i})">এডিট</button><button class="del" onclick="removeItem('events',${i})">মুছুন</button></div>`).join('');
-}
-function editEvent(i){let a=load('events'),x=a[i];et.value=x.title;ed.value=x.date;eb.value=x.text;a.splice(i,1);save('events',a);renderEvents()}
-function addNote(){
-let title=nt.value.trim(),text=nb.value.trim();if(!title||!text){alert('শিরোনাম ও বিবরণ লিখুন');return}
-let a=load('notes');a.push({title,text});save('notes',a);nt.value='';nb.value='';renderNotes();
-}
-function renderNotes(){
-notes.innerHTML=load('notes').map((x,i)=>`<div class="item"><h3>${safe(x.title)}</h3><p>${safe(x.text).replace(/\n/g,'<br>')}</p><button class="edit" onclick="editNote(${i})">এডিট</button><button class="del" onclick="removeItem('notes',${i})">মুছুন</button></div>`).join('');
-}
-function editNote(i){let a=load('notes'),x=a[i];nt.value=x.title;nb.value=x.text;a.splice(i,1);save('notes',a);renderNotes()}
-function removeItem(k,i){if(confirm('তথ্যটি মুছবেন?')){let a=load(k);a.splice(i,1);save(k,a);renderMembers();renderEvents();renderNotes()}}
-renderMembers();renderEvents();renderNotes();
-</script>
-</body>
-</html>
+/* Firebase Console থেকে পাওয়া নিজের config নিচে বসান */
+const firebaseConfig={apiKey:"PASTE_API_KEY_HERE",authDomain:"PASTE_PROJECT_ID_HERE.firebaseapp.com",databaseURL:"PASTE_DATABASE_URL_HERE",projectId:"PASTE_PROJECT_ID_HERE",storageBucket:"PASTE_PROJECT_ID_HERE.appspot.com",messagingSenderId:"PASTE_MESSAGING_SENDER_ID_HERE",appId:"PASTE_APP_ID_HERE"};
+const sections={
+plans:{form:"plansForm",list:"plansList",fields:[["title","শিরোনাম"],["date","তারিখ (ঐচ্ছিক)"],["text","বিস্তারিত পরিকল্পনা"]]},
+members:{form:"membersForm",list:"membersList",fields:[["name","নাম"],["phone","মোবাইল নম্বর"],["blood","রক্তের গ্রুপ"]]},
+events:{form:"eventsForm",list:"eventsList",fields:[["title","শিরোনাম"],["date","তারিখ (ঐচ্ছিক)"],["text","বিস্তারিত"],["url","ছবি/ডকুমেন্ট লিংক (ঐচ্ছিক)"]]},
+notes:{form:"notesForm",list:"notesList",fields:[["title","শিরোনাম"],["text","বিস্তারিত"]]}};
+let db=null,editing={};
+function safe(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function setStatus(t){document.getElementById("status").textContent=t;}
+function renderForm(k){const s=sections[k],e=editing[k]||null;document.getElementById(s.form).innerHTML='<div class="row">'+s.fields.map(f=>f[0]==="text"?'<textarea id="'+k+'_'+f[0]+'" placeholder="'+safe(f[1])+'">'+safe(e?e.data[f[0]]:"")+'</textarea>':'<input id="'+k+'_'+f[0]+'" placeholder="'+safe(f[1])+'" value="'+safe(e?e.data[f[0]]:"")+'">').join("")+'</div><button class="btn" onclick="saveItem(\''+k+'\')">'+(e?"পরিবর্তন সংরক্ষণ":"＋ Add করুন")+'</button>'+(e?'<button class="btn gray" onclick="cancelEdit(\''+k+'\')">বাতিল</button>':"");}
+function cancelEdit(k){delete editing[k];renderForm(k);}
+function saveItem(k){if(!db){alert("আগে Firebase সেটআপ করতে হবে।");return;}const s=sections[k],d={};s.fields.forEach(f=>d[f[0]]=document.getElementById(k+"_"+f[0]).value.trim());if(!d[s.fields[0][0]]){alert(s.fields[0][1]+" লিখুন");return;}d.updatedAt=Date.now();const old=editing[k];(old?db.ref(k+"/"+old.id).update(d):db.ref(k).push(d)).then(()=>{delete editing[k];renderForm(k);}).catch(e=>alert("সংরক্ষণ হয়নি: "+e.message));}
+function renderList(k,snap){const s=sections[k],el=document.getElementById(s.list),a=[];snap.forEach(c=>a.push({id:c.key,data:c.val()||{}}));a.reverse();el.innerHTML=a.length?a.map(x=>{const d=x.data,title=d.name||d.title||"তথ্য",body=s.fields.slice(1).map(f=>{const v=d[f[0]];if(!v)return "";if(f[0]==="url")return '<p><b>'+safe(f[1])+':</b> <a href="'+safe(v)+'" target="_blank" rel="noopener">লিংক খুলুন</a></p>';return '<p><b>'+safe(f[1])+':</b> '+safe(v)+'</p>';}).join("");return '<div class="item"><h3>'+safe(title)+'</h3>'+body+'<button class="btn gray" onclick="startEdit(\''+k+'\',\''+x.id+'\')">✏️ Edit</button><button class="btn red" onclick="deleteItem(\''+k+'\',\''+x.id+'\')">🗑 Delete</button></div>';}).join(""):'<p class="small">এখনো কোনো তথ্য যোগ করা হয়নি।</p>';}
+function startEdit(k,id){db.ref(k+"/"+id).once("value").then(s=>{editing[k]={id,data:s.val()||{}};renderForm(k);document.getElementById(sections[k].form).scrollIntoView({behavior:"smooth",block:"center"});});}
+function deleteItem(k,id){if(confirm("এই তথ্যটি মুছে ফেলতে চান?"))db.ref(k+"/"+id).remove().catch(e=>alert("মুছতে সমস্যা: "+e.message));}
+function init(){if(!firebaseConfig.apiKey.startsWith("PASTE_")&&!firebaseConfig.databaseURL.startsWith("PASTE_")){try{firebase.initializeApp(firebaseConfig);db=firebase.database();setStatus("অনলাইন ডেটাবেস সংযুক্ত");}catch(e){setStatus("Firebase সেটআপে সমস্যা — config পরীক্ষা করুন");}}else setStatus("সেটআপ বাকি: Firebase config বসাতে হবে");Object.keys(sections).forEach(k=>{renderForm(k);if(db)db.ref(k).on("value",s=>renderList(k,s),e=>setStatus("ডেটা পড়তে সমস্যা: "+e.message));else document.getElementById(sections[k].list).innerHTML='<p class="small">Firebase সেটআপ শেষ হলে এখানে সবার তথ্য দেখা যাবে।</p>';});}init();
+</script></body></html>
